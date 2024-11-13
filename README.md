@@ -29,11 +29,14 @@ This approach allows for controlled merging at each diffusion step, yielding con
 
 
 ## Results 
-1. **image size 1024 *1024, patch 256*256, stride 192*192**
-   wassdiff merge
-<img width="982" alt="Screenshot 2024-11-13 at 12 53 58 AM" src="https://github.com/user-attachments/assets/7def1d16-724e-4353-ba20-9bfa7864ba8b">
-   groud truth
-<img width="1063" alt="Screenshot 2024-11-13 at 12 58 12 AM" src="https://github.com/user-attachments/assets/eb47a03f-2004-4b49-a6b4-3309f16debcf">
+
+Image Size 1024×1024, Patch Size 256×256, Stride 192×192
+
+WissDiff Merge Result
+<img src="https://github.com/user-attachments/assets/7def1d16-724e-4353-ba20-9bfa7864ba8b" width="500" alt="WissDiff Merge">
+
+Ground Truth
+<img src="https://github.com/user-attachments/assets/eb47a03f-2004-4b49-a6b4-3309f16debcf" width="500" alt="Ground Truth">
 
 
 ## Installation and Usage
