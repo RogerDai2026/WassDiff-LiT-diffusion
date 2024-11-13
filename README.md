@@ -30,13 +30,12 @@ This approach allows for controlled merging at each diffusion step, yielding con
 
 ## Results 
 
+The following images illustrate the effectiveness of WissDiff's merging approach in reconstructing high-resolution precipitation maps.
+
 Image Size 1024×1024, Patch Size 256×256, Stride 192×192
 
-WissDiff Merge Result
-<img src="https://github.com/user-attachments/assets/7def1d16-724e-4353-ba20-9bfa7864ba8b" width="500" alt="WissDiff Merge">
-
-Ground Truth
-<img src="https://github.com/user-attachments/assets/eb47a03f-2004-4b49-a6b4-3309f16debcf" width="500" alt="Ground Truth">
+<table> <tr> <td><strong>WissDiff Merge Result</strong></td> <td><strong>Ground Truth</strong></td> </tr> <tr> <td><img src="https://github.com/user-attachments/assets/7def1d16-724e-4353-ba20-9bfa7864ba8b" width="400" alt="WissDiff Merge"></td> <td><img src="https://github.com/user-attachments/assets/eb47a03f-2004-4b49-a6b4-3309f16debcf" width="400" alt="Ground Truth"></td> </tr> </table>
+These side-by-side comparisons show that WissDiff's direct patch merging at each diffusion step achieves high boundary consistency and closely matches the ground truth, underscoring the model's capability in generating high-resolution precipitation maps.
 
 
 ## Installation and Usage
