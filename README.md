@@ -30,7 +30,7 @@ This approach allows for controlled merging at each diffusion step, yielding con
 
 ## Results 
 
-The following images illustrate the effectiveness of WissDiff's merging approach in reconstructing high-resolution precipitation maps.
+The following images illustrate the effectiveness of WissDiff's merging approach in reconstructing high-resolution precipitation maps without boundry effect.
 
 Image Size 1024×1024, Patch Size 256×256, Stride 192×192
 
