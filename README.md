@@ -27,11 +27,21 @@ Collaborating with Yuhao Liu, This projects employs novel methods for pixel merg
 
 This approach allows for controlled merging at each diffusion step, yielding consistent boundaries and maintaining high-resolution details across patches.
 
+
+## Results 
+1. **image size 1024 *1024, patch 256*256, stride 192*192**
+   wassdiff merge
+<img width="982" alt="Screenshot 2024-11-13 at 12 53 58 AM" src="https://github.com/user-attachments/assets/7def1d16-724e-4353-ba20-9bfa7864ba8b">
+   groud truth
+<img width="1063" alt="Screenshot 2024-11-13 at 12 58 12 AM" src="https://github.com/user-attachments/assets/eb47a03f-2004-4b49-a6b4-3309f16debcf">
+
+
 ## Installation and Usage
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/wissdiff.git
+   git clone https://github.com/yourusername/wissdiff.git<img width="982" alt="Screenshot 2024-11-13 at 12 53 58 AM" src="https://github.com/user-attachments/assets/3c686213-adf2-400f-9ae0-510bd18a74b7">
+
    ```
 
 2. **Requirements**
@@ -41,6 +51,7 @@ This approach allows for controlled merging at each diffusion step, yielding con
 
 3. **Run Model**
    ```bash
+
    python run_diffusion.py --input data/low_res_weather_data --output results/high_res_precipitation
    ```
 
