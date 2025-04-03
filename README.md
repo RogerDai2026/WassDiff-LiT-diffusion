@@ -26,7 +26,7 @@ The visualizations below demonstrate WissDiff’s ability to generate artifact-f
 
 ### Continental-Scale Tiled Diffusion Results
 
-![Tiled diffusion on CONUS]([tiled_diffusion (1).pdf](https://github.com/user-attachments/files/19579214/tiled_diffusion.1.pdf))
+![Tiled diffusion on CONUS](https://github.com/user-attachments/files/19579214/tiled_diffusion.1.pdf)
 
 *Figure*: Tiled diffusion results over the contiguous United States (CONUS): (a) Cold front, 2015-12-02 UTC; (b) Hailstorm, 2015-06-11 UTC; (c) Storm Bill, 2015-06-08 UTC. (Patch Size: 256×256 pixels, Stride: 192×192 pixels)
 
