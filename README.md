@@ -38,25 +38,6 @@ Image Size 1024×1024, Patch Size 256×256, Stride 192×192
 These side-by-side comparisons show that WissDiff's direct patch merging at each diffusion step achieves high boundary consistency and closely matches the ground truth, underscoring the model's capability in generating high-resolution precipitation maps.
 
 
-## Installation and Usage
-
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/yourusername/wissdiff.git<img width="982" alt="Screenshot 2024-11-13 at 12 53 58 AM" src="https://github.com/user-attachments/assets/3c686213-adf2-400f-9ae0-510bd18a74b7">
-
-   ```
-
-2. **Requirements**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run Model**
-   ```bash
-
-   python run_diffusion.py --input data/low_res_weather_data --output results/high_res_precipitation
-   ```
-
 ## Acknowledgments
 
 This project was developed in collaboration with Professor Ashok Veeraraghavan. The innovative patch-merging process, bypassing noise prediction, and StableSR techniques significantly improved the accuracy and resolution of precipitation data maps.
