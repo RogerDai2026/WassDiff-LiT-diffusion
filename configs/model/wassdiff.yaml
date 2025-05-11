@@ -19,7 +19,6 @@ optimizer_config:
     grad_clip: 1.0
 
 #scheduler:
-
 model_config:
   model:
     name: 'ncsnpp_cond'
@@ -51,7 +50,7 @@ model_config:
     scale_by_sigma: True
     # following is related to conditional sampling
     drop_prob: 0.1 # TODO: CIFAR used 0.2. Verify later
-    w_guide: 0
+    w_guide: 0 # NO NOT MODIFY; classifier-free guidance is no longer supported
     null_token: -1
   data:
     image_size: ${data.data_config.image_size}
@@ -81,5 +80,5 @@ model_config:
     method: 'pc'
     predictor: 'reverse_diffusion'
     corrector: 'langevin'
-    sampling_batch_size: 4
+    sampling_batch_size: 12
 

@@ -1,0 +1,14 @@
+# @package _global_
+# This file is not tracked by git and is specific to insight
+# note: do not append / at the end of the path
+local:
+  data_dir: /scratch/shared/data
+  log_dir: /scratch/qdai/models/WassDiff-LiT
+  eval_set_root_dir: /scratch/shared/data/rainfall_eval_LiT
+  specified_eval_root_dir: /scratch/qdai/data/rainfall_plots_LiT
+  model_root_dir: /scratch/shared/models
+data:
+  data_config:
+    use_precomputed_daily_aggregates: true
+    use_precomputed_era5: false
+    use_precomputed_cpc: false # both precip and gauge density

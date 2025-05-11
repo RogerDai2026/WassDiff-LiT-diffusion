@@ -5,6 +5,8 @@ from matplotlib import pyplot as plt
 from src.utils.ncsn_utils.sampling import NoneCorrector, NonePredictor, shared_corrector_update_fn, shared_predictor_update_fn
 import functools
 from rich.progress import track
+from src.utils.tiled_diffusion import TiledDiffusion  # ensure this module is available in your project
+from src.utils.image_spliter import ImageSpliterTh
 # from src.utils.metrics import calc_emd
 # from losses import sliced_wasserstein_distance
 
@@ -324,54 +326,53 @@ def get_pc_cfg_upsampler(sde, predictor, corrector, inverse_scaler, snr,
     projector_upsample_update_fn = get_upsample_update_fn(predictor_update_fn)
     corrector_upsample_update_fn = get_upsample_update_fn(corrector_update_fn)
 
-    def pc_upsampler(model, condition, w, out_dim, save_dir=None, null_condition=None, display_pbar=True, gt=None):
-        # emd
-        discrete_sigmas = torch.exp(torch.linspace(np.log(0.01), np.log(50), 1000))
-        smld_sigma_array = torch.flip(discrete_sigmas, dims=(0,))
+    def pc_upsampler(model, condition, w, out_dim, save_dir=None, null_condition=None,
+                         display_pbar=True, gt=None, null=None, tiled_diffusion=False, tiled_config=None):
+            # Precompute sigma arrays and initialize the sample.
+            discrete_sigmas = torch.exp(torch.linspace(np.log(0.01), np.log(50), 1000))
+            smld_sigma_array = torch.flip(discrete_sigmas, dims=(0,))
+            with torch.no_grad():
+                x = sde.prior_sampling(out_dim).to(condition.device)
+                noise = x.clone()
+                timesteps = torch.linspace(sde.T, eps, sde.N)
 
-        with torch.no_grad():
-            # Initial sample
-            x = sde.prior_sampling(out_dim).to(condition.device)
-            noise = x.clone()
-            timesteps = torch.linspace(sde.T, eps, sde.N)
+                # If tiled diffusion is enabled, call the helper class.
+                if tiled_diffusion and tiled_config is not None:
+                    # Pass the precomputed objects along with the update functions.
+                    tiled_diffuser = TiledDiffusion(tiled_config)
+                    x = tiled_diffuser.sample(
+                        x, timesteps, noise, smld_sigma_array,
+                        model=model,
+                        condition=condition,
+                        w=w,
+                        out_dim=out_dim,
+                        save_dir=save_dir,
+                        null_condition=null_condition,
+                        display_pbar=display_pbar,
+                        gt=gt,
+                        null=null,
+                        corrector_fn=corrector_upsample_update_fn,
+                        projector_fn=projector_upsample_update_fn
+                    )
+                    return inverse_scaler(x)
 
-            if display_pbar:
-                for i in track(range(sde.N), description=f'Sampling {sde.N} steps....', refresh_per_second=1):
-                    t = timesteps[i]
-                    x, x_mean = corrector_upsample_update_fn(model, x=x, t=t, c=condition, w=w, null_cond=null_condition)
-                    x, x_mean = projector_upsample_update_fn(model, x=x, t=t, c=condition, w=w, null_cond=null_condition)
+                # Otherwise, run the original full-image diffusion loop.
+                if display_pbar:
+                    for i in track(range(sde.N), description=f'Sampling {sde.N} steps....', refresh_per_second=1):
+                        t = timesteps[i]
+                        x, x_mean = corrector_upsample_update_fn(model, x=x, t=t, c=condition, w=w,
+                                                                 null_cond=null_condition)
+                        x, x_mean = projector_upsample_update_fn(model, x=x, t=t, c=condition, w=w,
+                                                                 null_cond=null_condition)
+                        # (Optional: visualization code could go here)
+                else:
+                    for i in range(sde.N):
+                        t = timesteps[i]
+                        x, x_mean = corrector_upsample_update_fn(model, x=x, t=t, c=condition, w=w,
+                                                                 null_cond=null_condition)
+                        x, x_mean = projector_upsample_update_fn(model, x=x, t=t, c=condition, w=w,
+                                                                 null_cond=null_condition)
 
-                    # if i in show_vis_at_steps:  # show diffusion progression
-                    if i % 5 == 0:
-                        sigmas = smld_sigma_array.to(x.device)[i]
-                        # perturbed_gt = gt + (noise * (sigmas / 50))
-                        # emd = sliced_wasserstein_distance(x[0, :, :, :].clone().float(), perturbed_gt[0, :, :, :])
-                        # plt.imshow(x[0, :, :, :].cpu().numpy().transpose(1, 2, 0))
-                        # # plt.title(f'progress, i = {i}, mean = {x[0, :, :, :].mean():.2f}, EMD = {emd:.2f}')
-                        # # plt.colorbar()
-                        # # plt.show()
-                        # plt.axis('off')  # Turn off the axis, ticks, and labels
-                        # plt.xticks([])  # Disable x ticks
-                        # plt.yticks([])  # Disable y ticks
-                        # plt.savefig(f'/home/yl241/workspace/NCSN/plt/progression_{i}.png', bbox_inches='tight', pad_inches=0, dpi=300)
-                        # plt.close()
-                        # calculate mean , preserve 0th axis
-                        # mean = x.mean(dim=(1,2,3))
-                        # print(f'progress, i = {i}, mean = {mean.detach().cpu().numpy()}')
-                        # print(f'{list(mean.detach().cpu().numpy())},')
-                        # write to file
-                        # with open(f'/home/yl241/data/rainfall_eval/general/sde_trajectory.txt', 'a') as f:
-                        #     f.write(f'{list(mean.detach().cpu().numpy())},\n')
-
-            else:
-                for i in range(sde.N):
-                    t = timesteps[i]
-                    x, x_mean = corrector_upsample_update_fn(model, x=x, t=t, c=condition, w=w, null_cond=null_condition)
-                    x, x_mean = projector_upsample_update_fn(model, x=x, t=t, c=condition, w=w, null_cond=null_condition)
-
-            return inverse_scaler(x_mean if denoise else x)
-
-
-
+                return inverse_scaler(x_mean if denoise else x)
 
     return pc_upsampler
